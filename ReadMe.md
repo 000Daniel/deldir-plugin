@@ -4,6 +4,11 @@
     You also have the option to delete a single file. <br />
     This plugin is a terminal command. <br />
 <br />
+![image](https://user-images.githubusercontent.com/90350173/149348626-b415577b-eafe-48f3-b7b8-e2a6be71899a.png)
+<br />
+![image](https://user-images.githubusercontent.com/90350173/149345745-ee2995b1-92bb-4587-b2bb-fe8f3ba4b6ca.png)
+<br />
+<br />
 ## Usage
     Available Flags: <br />
         `-q, --quiet              don't print folder/file tree` <br />
