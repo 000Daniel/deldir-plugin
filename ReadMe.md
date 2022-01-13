@@ -52,6 +52,8 @@
 <br />
 <br />
 <br />
+<br />
+<br />
 This software was programmed in Visual Studio Code (.Net 6.0).
 > Note: I am not a very experienced programmer, so expect issues and or limitations with this plugin.
 <br />
