@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Configuration>Release</Configuration>
+    <AssemblyName>deldir</AssemblyName>
+    <PublishTrimmed>true</PublishTrimmed>
+    <OutputType>Exe</OutputType>
+    <Platform>Any CPU</Platform>
+    <TargetFramework>net6.0</TargetFramework>
+    <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <PublishSingleFile>True</PublishSingleFile>
+    <PublishReadyToRun>False</PublishReadyToRun>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>
