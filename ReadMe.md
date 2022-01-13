@@ -27,6 +27,7 @@
 <br />
 <br />
 ## Note before installing
+    This script and the plugin should work on any systems with or without dotnet installed. <br />
     The auto install script uses: sudo. <br />
     This script was tested on EndeavourOS(Arch-based), but it should work on other linux systems. <br />
     I do not take any responsibility for any kind of damage this script might cause, <br />
@@ -49,6 +50,10 @@
     `sudo chmod +x /usr/bin/deldir` <br />
     now you should be able to run the 'deldir' command. <br />
 <br />
+<br />
+<br />
+This software was programmed in Visual Studio Code (.Net 6.0).
+> Note: I am not a very experienced programmer, so expect issues and or limitations with this plugin.
 <br />
 <br />
 ```diff
