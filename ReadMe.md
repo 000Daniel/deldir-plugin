@@ -55,7 +55,7 @@
 <br />
 <br />
 This software was programmed in Visual Studio Code (.Net 6.0).
-> Note: I am not a very experienced programmer, so expect issues and or limitations with this plugin.
+> Note: This is an early iteration of this plugin, so expect issues and or limitations with this plugin.
 <br />
 
 ```diff
