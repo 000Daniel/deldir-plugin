@@ -1,8 +1,9 @@
-﻿class deldir
+class deldir
 {
     static ConsoleColor color_directory = ConsoleColor.Magenta;
     static ConsoleColor color_folder = ConsoleColor.Green;
     static ConsoleColor color_file = ConsoleColor.Yellow;
+    static ConsoleColor color_folder2 = ConsoleColor.DarkMagenta;
     static ConsoleColor color_warning = ConsoleColor.Red;
     static List<string> total_folders = new List<string>();
     static List<string> total_files = new List<string>();
@@ -23,12 +24,14 @@
         List<string> Argument = parseArgs(args, "path", "change the path");
         help_message("usage","deldir");
         help_message("description","Directory eraser");
+        help_message("information","Version 1.1");
         help_message("information","created by https://github.com/000Daniel");
         if (Help)
         {
             help_message("call",string.Empty);
         }
-
+    try
+    {
         //this software finds all files and folders in this order:
         //1. find all folders in the base directory <add to list>
         //2. go inside each folder and look for all files <add to list>
@@ -240,6 +243,15 @@
         Console.WriteLine("");
         Environment.Exit(0);
     }
+    catch (Exception e)
+    {
+        Console.ForegroundColor = color_warning;
+        Console.WriteLine("Error! something went wrong!"); 
+        Console.WriteLine(e.Message);
+        Console.ResetColor();
+        Environment.Exit(0);
+    }
+    }
 
 
         //this function looks for folders and files INSIDE a folder.
@@ -247,6 +259,12 @@
     static int length_of_dir = 0;
     static void researchFolder(string CurrentDir,string folder_name) {
         length_of_dir += 3;
+        bool reset_length = false;
+        if (length_of_dir > 80) //default is 80
+        {
+            length_of_dir = 0;
+            reset_length = true;
+        }
         string[] allFolders = Directory.GetDirectories(CurrentDir + "/" + folder_name);
         foreach (string folder in allFolders)
         {
@@ -261,13 +279,53 @@
             string next_folder_name = folder.Substring(folder.LastIndexOf("/") + 1);
             if (!Quiet)
             {
+                string display_text = "";
                 if (Information)
                 {
-                    Console.WriteLine(wireString + "╚═══" + folder);
+                    display_text = folder;
                 }
                 else
                 {
-                    Console.WriteLine(wireString + "╚═══" + next_folder_name);
+                    display_text = next_folder_name;
+                }
+                if (reset_length)
+                {
+                    Console.ForegroundColor = color_folder2;
+                    try
+                    {
+                    string temp_str = folder.Substring(0,folder.LastIndexOf("/"));
+                    string temp_str2 = temp_str.Substring(temp_str.LastIndexOf("/") + 1);
+                    if (temp_str2.Length > 16)
+                    {
+                        temp_str2 = temp_str2.Substring(temp_str2.Length - 16);
+                        Console.Write(".." + temp_str2);
+                        length_of_dir += 3;
+                    }
+                    else
+                    {
+                        Console.Write(temp_str2);
+                    }
+                    //Console.Write(temp_str.Substring(temp_str.LastIndexOf("/") + 1));
+                        Console.ForegroundColor = color_folder;
+                        Console.Write(string.Format("{0}════{1}\n",wireString,display_text));
+                    //Console.Write(wireString + "════" + display_text + "\n");
+                        length_of_dir += temp_str2.Length;
+                        for (int i = 1; i < length_of_dir; i++) {
+                            wireString = wireString + " " ;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Console.ForegroundColor = color_warning;
+                        Console.WriteLine("Error! something went wrong with the folder search system!"); 
+                        Console.WriteLine(e.Message);
+                        Console.ResetColor();
+                        Environment.Exit(0);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine(wireString + "╚═══" + display_text);
                 }
             }
             
