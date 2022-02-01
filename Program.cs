@@ -3,7 +3,8 @@ class deldir
     static ConsoleColor color_directory = ConsoleColor.Magenta;
     static ConsoleColor color_folder = ConsoleColor.Green;
     static ConsoleColor color_file = ConsoleColor.Yellow;
-    static ConsoleColor color_folder2 = ConsoleColor.DarkMagenta;
+    static ConsoleColor color_file2 = ConsoleColor.DarkYellow;
+    static ConsoleColor color_folder2 = ConsoleColor.DarkGreen;
     static ConsoleColor color_warning = ConsoleColor.Red;
     static List<string> total_folders = new List<string>();
     static List<string> total_files = new List<string>();
@@ -12,31 +13,27 @@ class deldir
 
     static void Main (string[] args)
     {
-        //All this code is to get data from my Argument Parser.
-        //more info abount this code at:
-        //https://github.com/000Daniel/CSharp-Projects/tree/main/Argument%20Parser%20Template/V2.0
-        bool Help = parseArgsBool(args, new string[]{ "-h" , "--i" , "--help"}, "show this help message and exit");
-        Quiet = parseArgsBool(args, new string[]{ "-q" , "--quiet"}, "don't print folder/file tree");
-        Information = parseArgsBool(args, new string[]{ "-i" , "--information"}, "display extra information");
-        bool BaseDir = parseArgsBool(args, new string[]{ "-b" , "--basedirectory"}, "delete the base directory");
-        bool FolderOnly = parseArgsBool(args, new string[]{ "--fol" , "--foldersonly"}, "delete only folders");
-        bool FileOnly = parseArgsBool(args, new string[]{ "--fil" , "--filesonly"}, "delete only files");
-        List<string> Argument = parseArgs(args, "path", "change the path");
-        help_message("usage","deldir");
-        help_message("description","Directory eraser");
-        help_message("information","Version 1.1");
-        help_message("information","created by https://github.com/000Daniel");
-        if (Help)
-        {
-            help_message("call",string.Empty);
-        }
+            // All this code is to get data from my Argument Parser.
+            // more info abount this code at:
+            // https://github.com/000Daniel/CSharp-Projects/tree/main/Argument%20Parser%20Template/V3.1
+        bool Help = AP3.Boolean(args, new string[]{ "-h" , "--i" , "--help"}, "show this help message and exit");
+        Quiet = AP3.Boolean(args, new string[]{ "-q" , "--quiet"}, "don't print folder/file tree");
+        Information = AP3.Boolean(args, new string[]{ "-i" , "--information"}, "display extra information");
+        bool BaseDir = AP3.Boolean(args, new string[]{ "-b" , "--basedirectory"}, "delete the base directory");
+        bool FolderOnly = AP3.Boolean(args, new string[]{ "--fol" , "--foldersonly"}, "delete only folders");
+        bool FileOnly = AP3.Boolean(args, new string[]{ "--fil" , "--filesonly"}, "delete only files");
+        List<string> Argument = AP3.List(args, "path", "change the path");
+        AP3.help_message("description","Directory eraser");
+        AP3.help_message("information","created by https://github.com/000Daniel");
+        if (Help) {AP3.help_message("call",string.Empty);}
+    
     try
     {
-        //this software finds all files and folders in this order:
-        //1. find all folders in the base directory <add to list>
-        //2. go inside each folder and look for all files <add to list>
-        //3. now look for more folders and repeat
-        //4. find all files in base directory <add to list>
+            // this software finds all files and folders in this order:
+            // 1. find all folders in the base directory <add to list>
+            // 2. go inside each folder and look for all files <add to list>
+            // 3. now look for more folders and repeat
+            // 4. find all files in base directory <add to list>
         var CurrentDir = "";
         try
         {
@@ -44,19 +41,16 @@ class deldir
         }
         catch
         {
-            Console.ForegroundColor = color_warning;
-            Console.WriteLine("Error! program executed at an invalid directory."); 
-            Console.ResetColor();
-            Environment.Exit(0);
+            AP3.ErrorCall("program executed at an invalid directory.");
         }
         bool onlyOneFile = false;
         if (Argument.Count() > 0) 
         {
             foreach (string arg in Argument)
             {
-            //default/base path = the path that this software is executed at.
-            //this code allows the user to choose a path different than the
-            //base path, thanks to my Argument Parser(more on this later). 
+            // default/base path = the path that this software is executed at.
+            // this code allows the user to choose a path different than the
+            // base path, thanks to my Argument Parser(more on this later). 
                 if (arg.IndexOf("/") == 0)
                 {
                     if (Directory.Exists(arg))
@@ -72,10 +66,7 @@ class deldir
                         }
                         else
                         {
-                            Console.ForegroundColor = color_warning;
-                            Console.WriteLine("Error! directory or file missing."); 
-                            Console.ResetColor();
-                            Environment.Exit(0);
+                            AP3.ErrorCall("directory or file missing.");
                         }
                     }
                 }
@@ -92,22 +83,18 @@ class deldir
                     }
                     else
                     {
-                        Console.ForegroundColor = color_warning;
-                        Console.WriteLine("Error! directory or file missing."); 
-                        Console.ResetColor();
-                        Environment.Exit(0);
+                        AP3.ErrorCall("directory or file missing.");
                     }
                 }
             }
         }
-        //'onlyOneFile' means that the user chose to delete a single file, the software would
-        //skip all the folder and files checks until the deletion.
-        //with 'onlyOneFile' the software would delete only that one file and nothing else.
+            // 'onlyOneFile' means that the user chose to delete a single file, the software would
+            // skip all the folder and files checks.
         if (!onlyOneFile)
         {
-        //these lists contain all files and folders with full paths.
-        //the next code, does what was mentioned earlier with finding all the files and folders.
-        //Note: it looks in the base directory OR the directory that the user chose.
+            // these lists contain all files and folders with full paths.
+            // the next code, does what was mentioned earlier with finding all the files and folders.
+            // Note: it looks in the base directory OR the directory that the user chose.
             string[] allFiles = Directory.GetFiles(CurrentDir);
             string[] allFolders = Directory.GetDirectories(CurrentDir);
 
@@ -123,11 +110,13 @@ class deldir
 
             foreach (string folder in allFolders)
             {
-                Console.ForegroundColor = color_folder;
                 length_of_dir = 0;
                 string folder_name = folder.Substring(folder.LastIndexOf("/") + 1);
+
                 if (!Quiet)
                 {
+                    Console.ForegroundColor = color_folder;
+
                     if (Information)
                     {
                         Console.WriteLine(folder);
@@ -156,7 +145,7 @@ class deldir
                     }
                     total_files.Add(file);
                 }
-
+                Console.ResetColor();
                 researchFolder(CurrentDir,folder_name);
             }
 
@@ -164,8 +153,8 @@ class deldir
             Console.ForegroundColor = color_file;
             foreach (string file in allFiles)
             {
-            if (!Quiet)
-            {
+                if (!Quiet)
+                {
                     if (Information)
                     {
                         Console.WriteLine(file);
@@ -177,10 +166,13 @@ class deldir
                 }
                 total_files.Add(file);
             }
+            Console.ResetColor();
         }
-        //this message asks whether the user wants to delete all files and folders, and lists
-        //how many will be deleted.
-        //if the user types 'yes' the software will delete the files/folders
+            // this message asks whether the user wants to delete all files and folders, and lists
+            // how many will be deleted.
+            // if the user types 'yes' the software will delete the files/folders
+            //
+            // 'FolderOnly' and 'FileOnly' --> delete only folders or only files.
         if (FolderOnly && !FileOnly)
         {
             total_files = new List<string>();
@@ -190,17 +182,26 @@ class deldir
             total_folders = new List<string>();
         }
         Console.ForegroundColor = color_warning;
-        Console.WriteLine(string.Format("\nYou are about to delete {0} Files and {1} Folders.",total_files.Count(),total_folders.Count()));
+        Console.WriteLine("\nYou are about to delete {0} Files and {1} Folders.",total_files.Count(),total_folders.Count());
+        
+            // '-b' --> delete base directory.
         if (BaseDir)
         {
             Console.WriteLine("And about to delete this directory: " + CurrentDir);
         }
         Console.ResetColor();
+
+            // final confirmation message whether the user wants to delete the files/folders.
         Console.Write("Are you sure? [yes/N]");
-        string userInput = Console.ReadLine().ToString();
+        string userInput = Console.ReadLine()!.ToString();
         
+            // this deletes all the requested folders and files.
+            // FolderOnly --> delete ONLY folders.
+            // FileOnly   --> delete ONLY files.
+            // BaseDir    --> delete the base directory.
         if (!string.IsNullOrEmpty(userInput) && userInput.ToLower() == "yes")
         {
+            Console.ForegroundColor = color_warning;
             foreach (string total_file in total_files)
             {
                 if (!Quiet)
@@ -211,9 +212,7 @@ class deldir
                 }
                 catch
                 {
-                    Console.ForegroundColor = color_warning;
-                    Console.WriteLine(string.Format("Error! couldn't delete '{0}'.",total_file)); 
-                    Console.ResetColor();
+                    AP3.WarningCall(string.Format("couldn't delete '{0}'.",total_file));
                 }
             }
 
@@ -227,17 +226,24 @@ class deldir
                 }
                 catch
                 {
-                    Console.ForegroundColor = color_warning;
-                    Console.WriteLine(string.Format("Error! couldn't delete '{0}'.",total_folders[i])); 
-                    Console.ResetColor();
+                    AP3.WarningCall(string.Format("couldn't delete '{0}'.",total_folders[i]));
                 }
             }
             if (BaseDir)
-        {
-            if (!Quiet)
-                Console.WriteLine("Deleting base directory: " + CurrentDir);
-            Directory.Delete(CurrentDir);
-        }
+            {
+                if (!Quiet)
+                {
+                    Console.WriteLine("Deleting base directory: " + CurrentDir);
+                }
+                try
+                {
+                    Directory.Delete(CurrentDir);
+                }
+                catch
+                {
+                    AP3.WarningCall("couldn't delete base directory.");
+                }
+            }
         }
         Console.ResetColor();
         Console.WriteLine("");
@@ -245,33 +251,40 @@ class deldir
     }
     catch (Exception e)
     {
-        Console.ForegroundColor = color_warning;
-        Console.WriteLine("Error! something went wrong!"); 
-        Console.WriteLine(e.Message);
-        Console.ResetColor();
-        Environment.Exit(0);
+            // this exception is here to catch every error possible inside Main() function.
+        AP3.ErrorCall(String.Format("something went wrong!\n{0}", e.Message));
     }
     }
 
 
-        //this function looks for folders and files INSIDE a folder.
-        //this function will also loop multiple times until it finds all files and folders.
+            // this function looks for folders and files INSIDE a folder.
+            // this function will also loop multiple times until it finds all files and folders.
     static int length_of_dir = 0;
-    static void researchFolder(string CurrentDir,string folder_name) {
+    static void researchFolder(string CurrentDir,string folder_name)
+    {
         length_of_dir += 3;
         bool reset_length = false;
-        if (length_of_dir > 80) //default is 80
+            // terminal_length will determine when should the tree split and reset.
+        int terminal_length = Console.BufferWidth - 5;
+            // minimum terminal_length is 20.
+        if (terminal_length < 20)
+        {
+            terminal_length = 20;
+        }
+        if (length_of_dir + folder_name.Length > terminal_length)
         {
             length_of_dir = 0;
             reset_length = true;
         }
+
         string[] allFolders = Directory.GetDirectories(CurrentDir + "/" + folder_name);
         foreach (string folder in allFolders)
         {
             total_folders.Add(folder);
 
             string wireString = "";
-            for (int i = 1; i < length_of_dir; i++) {
+            for (int i = 1; i < length_of_dir; i++)
+            {
                 wireString = wireString + " " ;
             }
 
@@ -293,43 +306,39 @@ class deldir
                     Console.ForegroundColor = color_folder2;
                     try
                     {
-                    string temp_str = folder.Substring(0,folder.LastIndexOf("/"));
-                    string temp_str2 = temp_str.Substring(temp_str.LastIndexOf("/") + 1);
-                    if (temp_str2.Length > 16)
-                    {
-                        temp_str2 = temp_str2.Substring(temp_str2.Length - 16);
-                        Console.Write(".." + temp_str2);
-                        length_of_dir += 3;
-                    }
-                    else
-                    {
-                        Console.Write(temp_str2);
-                    }
-                    //Console.Write(temp_str.Substring(temp_str.LastIndexOf("/") + 1));
+                        string temp_str = folder.Substring(0,folder.LastIndexOf("/"));
+                        string temp_str2 = temp_str.Substring(temp_str.LastIndexOf("/") + 1);
+                        if (temp_str2.Length > 16)
+                        {
+                            temp_str2 = temp_str2.Substring(temp_str2.Length - 16);
+                            Console.Write(".." + temp_str2);
+                            length_of_dir += 3;
+                        }
+                        else
+                        {
+                            Console.Write(temp_str2);
+                        }
                         Console.ForegroundColor = color_folder;
-                        Console.Write(string.Format("{0}════{1}\n",wireString,display_text));
-                    //Console.Write(wireString + "════" + display_text + "\n");
+                        Console.Write("════{0}\n",display_text);
+
                         length_of_dir += temp_str2.Length;
-                        for (int i = 1; i < length_of_dir; i++) {
+                        for (int i = 1; i < length_of_dir; i++)
+                        {
                             wireString = wireString + " " ;
                         }
                     }
                     catch (Exception e)
                     {
-                        Console.ForegroundColor = color_warning;
-                        Console.WriteLine("Error! something went wrong with the folder search system!"); 
-                        Console.WriteLine(e.Message);
-                        Console.ResetColor();
-                        Environment.Exit(0);
+                        AP3.ErrorCall("something went wrong with the folder search system!\n" + e.Message);
                     }
                 }
                 else
                 {
                     Console.WriteLine(wireString + "╚═══" + display_text);
                 }
+                Console.ResetColor();
             }
             
-            Console.ForegroundColor = color_file;
             string[] allFiles = Directory.GetFiles(CurrentDir + "/" + folder_name);
 
             allFiles = new string[]{};
@@ -339,146 +348,46 @@ class deldir
                 total_files.Add(file);
                 if (!Quiet)
                 {
-                    if (Information)
+                    string file_short = file.Substring(file.LastIndexOf("/") + 1);
+                    if (length_of_dir + file_short.Length > terminal_length)
                     {
-                        Console.WriteLine(wireString + "  ╚═══" + file);
+                        length_of_dir = 0;
+                        reset_length = true;
+                    }
+                    if (reset_length)
+                    {
+                        Console.ForegroundColor = color_file2;
+                        try
+                        {
+                            Console.WriteLine(".." + file_short);
+                        
+                            for (int i = 1; i < length_of_dir; i++)
+                            {
+                                wireString = wireString + " " ;
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            AP3.ErrorCall("something went wrong with the file search system!\n" + e.Message);
+                        }
                     }
                     else
                     {
-                        Console.WriteLine(wireString + "  ╚═══" + file.Substring(file.LastIndexOf("/") + 1));
+                        Console.ForegroundColor = color_file;
+                        if (Information)
+                        {
+                            Console.WriteLine(wireString + "  ╚═══" + file);
+                        }
+                        else
+                        {
+                            Console.WriteLine(wireString + "  ╚═══" + file.Substring(file.LastIndexOf("/") + 1));
+                        }
                     }
                 }
+                Console.ResetColor();
             }
-            
             researchFolder(CurrentDir + "/" + folder_name,next_folder_name);
         }
     }
-
-
-
-        //every code after this point is unrelated to the deleting funtions of this software.
-        //the next code is my Argument Parser. it is necessary so this software will know what the
-        //user wrote.
-        //Example: deldir Desktop/NewFolder
-        //this code will know that the 'Desktop/NewFolder' is a directory(string) and it will pass it
-        //back to the Main() function.
-        //learn more at:
-        //https://github.com/000Daniel/CSharp-Projects/tree/main/Argument%20Parser%20Template/V2.0
-    static bool parseArgsBool(string[] args, string[] flags, string desc)
-    {
-        string message_flags = "";
-        usage_flags = usage_flags + string.Format("[{0}] ",flags.First());
-        foreach (string flag in flags)
-        {
-            all_flags_list.Add(flag);
-            if (flag != flags.Last()) 
-            {
-                message_flags = message_flags + flag + ", ";
-            }
-            else 
-            {
-                message_flags = message_flags + flag + " ";
-            }
-        }
-        string message = message_flags;
-            for (int i = message.Length; i < 22; i++) 
-            {
-                message = message + " ";
-            }
-            message = message + desc;
-            ops_args.Add(message);
-        foreach (string argument in args)
-        {
-            foreach (string flag in flags)
-            {
-                if (argument == flag)
-                {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-    static List<string> parseArgs(string[] args, string name,string desc)
-    {
-        List<string> all_arguments_list = new List<string>();
-        string message = name;
-        for (int i = message.Length; i < 22; i++) 
-            {
-                message = message + " ";
-            }
-        message = message + desc;
-        help_message("positional argument",message);
-        foreach (string argument in args) 
-        {
-            if (!all_flags_list.Contains(argument))
-            {
-                all_arguments_list.Add(argument);
-            }
-        }
-        return all_arguments_list;
-    }
-    static List<string> all_flags_list = new List<string>();
-    static string usage_flags = "";
-    static string usage = "Program";
-    static string description = "";
-    static List<string> pos_args = new List<string>();
-    static List<string> ops_args = new List<string>();
-    static List<string> more_info = new List<string>();
-    static void help_message(string operation, string message)
-    {
-        if (operation == "usage" && !string.IsNullOrEmpty(message))
-        {
-            usage = message;
-        }
-        if (operation == "description" && !string.IsNullOrEmpty(message))
-        {
-            description = "\n" + message;
-        }
-        if (operation == "positional argument" && !string.IsNullOrEmpty(message))
-        {
-           pos_args.Add(message);
-        }
-        if (operation == "optional argument" && !string.IsNullOrEmpty(message))
-        {
-            ops_args.Add(message);
-        }
-        if (operation == "information" && !string.IsNullOrEmpty(message))
-        {
-            more_info.Add(message);
-        }
-        if (operation == "call") {
-            Console.WriteLine("usage: " + usage + " " + usage_flags);
-            if (!string.IsNullOrEmpty(description))
-            {
-                Console.WriteLine(description);
-            }
-            if (pos_args.Count > 0)
-            {
-                Console.WriteLine("\npositional arguments:");
-                foreach (string arg in pos_args) 
-                {
-                    Console.WriteLine("  " + arg);
-                }
-            }
-            if (ops_args.Count > 0)
-            {
-                Console.WriteLine("\noptions:");
-                foreach (string arg in ops_args) 
-                {
-                    Console.WriteLine("  " + arg);
-                }
-            }
-            if (more_info.Count > 0)
-            {
-                Console.WriteLine("\ninformation:");
-                foreach (string arg in more_info) 
-                {
-                    Console.WriteLine("  " + arg);
-                }
-            }
-            Environment.Exit(0);
-        }
-    }
 }
-
+//created by https://github.com/000Daniel
