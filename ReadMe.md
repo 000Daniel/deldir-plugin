@@ -51,15 +51,15 @@
     now you should be able to run the 'deldir' command. <br />
 ## Change log:
 ### 1.2
-    ● Fixed more issues regarding long directories not displaying properly. <br />
-    ● Ported this project to use my Argument Parser 3.2 instead of 2.0. <br />
-    ● Changed a bit the color scheme. <br />
-    ● Optimized some of the source code(to be more readable). <br />
-    ● Added more comments in the source code. <br />
+    • Fixed more issues regarding long directories not displaying properly. <br />
+    • Ported this project to use my Argument Parser 3.2 instead of 2.0. <br />
+    • Changed a bit the color scheme. <br />
+    • Optimized some of the source code(to be more readable). <br />
+    • Added more comments in the source code. <br />
 ### 1.1
-    ● Fixed some issues regarding long directories not displaying properly. <br />
-    ● Added more exceptions with new Error messages. <br />
-    ● Added a 'Version' text in `-h` <br />
+    • Fixed some issues regarding long directories not displaying properly. <br />
+    • Added more exceptions with new Error messages. <br />
+    • Added a 'Version' text in `-h` <br />
 <br />
 <br />
 <br />
