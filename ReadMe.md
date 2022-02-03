@@ -9,7 +9,7 @@
 <br />
 ## Usage
     Available Flags: <br />
-        `-q, --quiet              don't print folder/file tree` <br />
+        `-q, --quiet             don't print folder/file tree` <br />
         `-i, --information       display extra information` <br />
         `-b, --basedirectory     delete the base directory` <br />
         `--fol, --foldersonly    delete only folders` <br />
