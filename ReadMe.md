@@ -23,7 +23,7 @@
         `deldir Desktop/folder --fil` <br />
 <br />
 <br />
-![image](https://user-images.githubusercontent.com/90350173/149345745-ee2995b1-92bb-4587-b2bb-fe8f3ba4b6ca.png)
+![image](https://user-images.githubusercontent.com/90350173/152392515-d915103a-a575-4366-92db-58d03ec2c0a2.png)
 <br />
 <br />
 ## Note before installing
@@ -66,7 +66,7 @@
 <br />
 <br />
 This software was programmed in Visual Studio Code (.Net 6.0).
-> Note: This is an early iteration of this plugin, so expect issues and or limitations with this plugin.
+> Note: This is an early iteration of this plugin, so expect limitations with this plugin.
 <br />
 
 ```diff
