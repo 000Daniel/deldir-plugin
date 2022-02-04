@@ -50,6 +50,12 @@
     `sudo chmod +x /usr/bin/deldir` <br />
     now you should be able to run the 'deldir' command. <br />
 ## Change log:
+### 1.3
+    • Added a better 'tree' preview of folders and files. <br />
+    • Added a cleaner 'current' directory display. <br />
+    • Added back the 'Version' text in `-h`. <br />
+    • Updated the `installer.sh` file. <br />
+    • The plugin will now sort the files and the folders. <br />
 ### 1.2
     • Fixed more issues regarding long directories not displaying properly. <br />
     • Ported this project to use my Argument Parser 3.2 instead of 2.0. <br />
