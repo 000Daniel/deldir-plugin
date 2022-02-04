@@ -24,6 +24,7 @@ class deldir
         bool FileOnly = AP3.Boolean(args, new string[]{ "--fil" , "--filesonly"}, "delete only files");
         List<string> Argument = AP3.List(args, "path", "change the path");
         AP3.help_message("description","Directory eraser");
+        AP3.help_message("information","version 1.3");
         AP3.help_message("information","created by https://github.com/000Daniel");
         if (Help) {AP3.help_message("call",string.Empty);}
     
@@ -55,24 +56,22 @@ class deldir
                 {
                     if (Directory.Exists(arg))
                     {
-                        CurrentDir = arg;
+                        CurrentDir = Path.GetFullPath(arg);
+                        break;
                     }
-                    else
+
+                    if (File.Exists(arg))
                     {
-                        if (File.Exists(arg))
-                        {
-                            total_files.Add(CurrentDir + "/" + arg);
-                            onlyOneFile = true;
-                        }
-                        else
-                        {
-                            AP3.ErrorCall("directory or file missing.");
-                        }
+                        total_files.Add(arg);
+                        onlyOneFile = true;
+                        break;
                     }
+
+                    AP3.ErrorCall("directory or file missing.");
                 }
                 else if (Directory.Exists(CurrentDir + "/" + arg))
                 {
-                    CurrentDir = CurrentDir + "/" + arg;
+                    CurrentDir = Path.GetFullPath(CurrentDir + "/" + arg);
                 }
                 else
                 {
@@ -80,11 +79,10 @@ class deldir
                     {
                         total_files.Add(CurrentDir + "/" + arg);
                         onlyOneFile = true;
+                        break;
                     }
-                    else
-                    {
-                        AP3.ErrorCall("directory or file missing.");
-                    }
+
+                    AP3.ErrorCall("directory or file missing.");
                 }
             }
         }
@@ -97,8 +95,11 @@ class deldir
             // Note: it looks in the base directory OR the directory that the user chose.
             string[] allFiles = Directory.GetFiles(CurrentDir);
             string[] allFolders = Directory.GetDirectories(CurrentDir);
+            Array.Sort(allFiles);
+            Array.Sort(allFolders);
 
             Console.ForegroundColor = color_directory;
+
             if (Quiet)
             {
                 Console.WriteLine(CurrentDir);
@@ -110,11 +111,12 @@ class deldir
 
             foreach (string folder in allFolders)
             {
-                length_of_dir = 0;
                 string folder_name = folder.Substring(folder.LastIndexOf("/") + 1);
 
                 if (!Quiet)
                 {
+                    treeBranch = treeBranch + "  ";
+
                     Console.ForegroundColor = color_folder;
 
                     if (Information)
@@ -136,11 +138,11 @@ class deldir
                     {
                         if (Information)
                         {
-                            Console.WriteLine("  ╚═══" + file);
+                            Console.WriteLine(treeBranch + "╚═══" + file);
                         }
                         else
                         {
-                            Console.WriteLine("  ╚═══" + file.Substring(file.LastIndexOf("/") + 1));
+                            Console.WriteLine(treeBranch + "╚═══" + file.Substring(file.LastIndexOf("/") + 1));
                         }
                     }
                     total_files.Add(file);
@@ -158,11 +160,9 @@ class deldir
                     if (Information)
                     {
                         Console.WriteLine(file);
+                        break;
                     }
-                    else
-                    {
-                        Console.WriteLine(file.Substring(file.LastIndexOf("/") + 1));
-                    }
+                    Console.WriteLine(file.Substring(file.LastIndexOf("/") + 1));
                 }
                 total_files.Add(file);
             }
@@ -219,7 +219,9 @@ class deldir
             for (int i=total_folders.Count() -1; i >= 0; i--)
             {
                 if (!Quiet)
+                {
                     Console.WriteLine("Deleting folder: " + total_folders[i]);
+                }
                 try
                 {
                     Directory.Delete(total_folders[i]);
@@ -258,41 +260,40 @@ class deldir
 
 
             // this function looks for folders and files INSIDE a folder.
+            // and it adds them to 'total_folders' and 'total_files'
             // this function will also loop multiple times until it finds all files and folders.
-    static int length_of_dir = 0;
+    static string treeBranch = "";
     static void researchFolder(string CurrentDir,string folder_name)
     {
-        length_of_dir += 3;
         bool reset_length = false;
-            // terminal_length will determine when should the tree split and reset.
-        int terminal_length = Console.BufferWidth - 5;
+            // terminal_length will determine when should the tree reset its 'treeBranch'.
+            // if a files/folder name is too long, the plugin would reset its 'treeBranch'.
             // minimum terminal_length is 20.
+        int terminal_length = Console.BufferWidth - 5;
         if (terminal_length < 20)
         {
             terminal_length = 20;
         }
-        if (length_of_dir + folder_name.Length > terminal_length)
+        if (treeBranch.Length + folder_name.Length > terminal_length)
         {
-            length_of_dir = 0;
+            treeBranch = "";
             reset_length = true;
         }
 
+            // this prints the folders that are inside other folders.
         string[] allFolders = Directory.GetDirectories(CurrentDir + "/" + folder_name);
+            // 'Array.Sort()' is to sort by the names of the folders and files.
+        Array.Sort(allFolders);
         foreach (string folder in allFolders)
         {
             total_folders.Add(folder);
-
-            string wireString = "";
-            for (int i = 1; i < length_of_dir; i++)
-            {
-                wireString = wireString + " " ;
-            }
 
             Console.ForegroundColor = color_folder;
             string next_folder_name = folder.Substring(folder.LastIndexOf("/") + 1);
             if (!Quiet)
             {
                 string display_text = "";
+
                 if (Information)
                 {
                     display_text = folder;
@@ -308,11 +309,11 @@ class deldir
                     {
                         string temp_str = folder.Substring(0,folder.LastIndexOf("/"));
                         string temp_str2 = temp_str.Substring(temp_str.LastIndexOf("/") + 1);
-                        if (temp_str2.Length > 16)
+            // this shortens the name of the parent folder.
+                        if (temp_str2.Length > 5)
                         {
-                            temp_str2 = temp_str2.Substring(temp_str2.Length - 16);
+                            temp_str2 = temp_str2.Substring(temp_str2.Length - 5);
                             Console.Write(".." + temp_str2);
-                            length_of_dir += 3;
                         }
                         else
                         {
@@ -320,12 +321,8 @@ class deldir
                         }
                         Console.ForegroundColor = color_folder;
                         Console.Write("════{0}\n",display_text);
-
-                        length_of_dir += temp_str2.Length;
-                        for (int i = 1; i < length_of_dir; i++)
-                        {
-                            wireString = wireString + " " ;
-                        }
+            // adds spaces(the length of the parent's folder name) to 'treeBranch'.
+                        treeBranch = treeBranch + new string(' ',temp_str2.Length + 1);
                     }
                     catch (Exception e)
                     {
@@ -334,59 +331,81 @@ class deldir
                 }
                 else
                 {
-                    Console.WriteLine(wireString + "╚═══" + display_text);
+            // prints last folder with '╚═══', while every other folder with '╠═══'.
+                    if (folder.Equals(allFolders.Last()))
+                    {
+                        Console.WriteLine(treeBranch + "╚═══" + display_text);
+                    }
+                    else
+                    {
+                        Console.WriteLine(treeBranch + "╠═══" + display_text);
+                    }
                 }
                 Console.ResetColor();
             }
+            // if the folder is the last folder in the directory dont add a '║'.
+            if (folder.Equals(allFolders.Last()))
+            {
+                treeBranch = treeBranch + "  ";
+            }
+            else
+            {
+                treeBranch = treeBranch + "║ ";
+            }
             
-            string[] allFiles = Directory.GetFiles(CurrentDir + "/" + folder_name);
-
-            allFiles = new string[]{};
-            allFiles = Directory.GetFiles(CurrentDir + "/" + folder_name + "/" + next_folder_name);
+            // this prints the files inside the folders.
+            string[] allFiles = Directory.GetFiles(CurrentDir + "/" + folder_name + "/" + next_folder_name);
+            Array.Sort(allFiles);
             foreach (string file in allFiles)
             {
                 total_files.Add(file);
                 if (!Quiet)
                 {
                     string file_short = file.Substring(file.LastIndexOf("/") + 1);
-                    if (length_of_dir + file_short.Length > terminal_length)
+            // reset a 'treeBranch' if the file name is too long.
+                    if (treeBranch.Length + file_short.Length > terminal_length)
                     {
-                        length_of_dir = 0;
-                        reset_length = true;
-                    }
-                    if (reset_length)
-                    {
+                        treeBranch = "";
                         Console.ForegroundColor = color_file2;
                         try
                         {
                             Console.WriteLine(".." + file_short);
-                        
-                            for (int i = 1; i < length_of_dir; i++)
-                            {
-                                wireString = wireString + " " ;
-                            }
                         }
                         catch (Exception e)
                         {
                             AP3.ErrorCall("something went wrong with the file search system!\n" + e.Message);
                         }
+                        break;
+                    }
+                    
+            // prints the 'treeBranch' in green, while the file name in yellow.
+                    if (Information)
+                    {
+                        Console.ForegroundColor = color_folder;
+                        Console.Write(treeBranch);
+
+                        Console.ForegroundColor = color_file;
+                        Console.WriteLine("╚═══" + file);
                     }
                     else
                     {
-                        Console.ForegroundColor = color_file;
-                        if (Information)
-                        {
-                            Console.WriteLine(wireString + "  ╚═══" + file);
-                        }
-                        else
-                        {
-                            Console.WriteLine(wireString + "  ╚═══" + file.Substring(file.LastIndexOf("/") + 1));
-                        }
+                    Console.ForegroundColor = color_folder;
+                    Console.Write(treeBranch);
+
+                    Console.ForegroundColor = color_file;
+                    Console.WriteLine("╚═══" + file.Substring(file.LastIndexOf("/") + 1));
                     }
                 }
                 Console.ResetColor();
             }
-            researchFolder(CurrentDir + "/" + folder_name,next_folder_name);
+            // this starts searching the next folder.
+            researchFolder(CurrentDir + "/" + folder_name, next_folder_name);
+        }
+            // remove the last 2(two) characters from 'treeBranch', each time the program
+            // goes back 1(one) directory.
+        if (treeBranch.Length > 1)
+        {
+            treeBranch = treeBranch.Substring(0,treeBranch.Length - 2);
         }
     }
 }
