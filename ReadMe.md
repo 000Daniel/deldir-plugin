@@ -56,6 +56,8 @@
     • Added back the 'Version' text in `-h`. <br />
     • Updated the `installer.sh` file. <br />
     • The plugin will now sort the files and the folders. <br />
+    • Optimized some of the source code(to be more readable). <br />
+    • Added more comments in the source code. <br />
 ### 1.2
     • Fixed more issues regarding long directories not displaying properly. <br />
     • Ported this project to use my Argument Parser 3.2 instead of 2.0. <br />
